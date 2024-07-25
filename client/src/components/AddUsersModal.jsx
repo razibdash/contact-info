@@ -97,7 +97,6 @@ function AddUsersModal() {
             className=" rounded p-2 bg-stone-50 text-stone-400"
             type="file"
             autoComplete="off"
-            placeholder="Enter you  phone"
             name="myFile"
             id="file"
             onChange={inputFile}

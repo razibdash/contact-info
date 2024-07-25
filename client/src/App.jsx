@@ -1,5 +1,6 @@
 import AddUsersModal from "./components/AddUsersModal";
 import User from "./components/User";
+import UpdateUser from "./components/UpdateUser";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const route = createBrowserRouter([
@@ -13,7 +14,7 @@ function App() {
     },
     {
       path: "/update/:id",
-      element: <User />,
+      element: <UpdateUser />,
     },
   ]);
 

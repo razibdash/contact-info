@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "./Header";
-import UpdateUser from "./UpdateUser";
+
 import { Link, useNavigate } from "react-router-dom";
 
 function User() {
   const [users, setUsers] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [updateId, setUpdateId] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,8 +23,8 @@ function User() {
   const handleDeleteUser = async (userId) => {
     await axios
       .delete(`http://localhost:3000/api/delete/user/${userId}`)
-      .then(() => {
-        navigate("/");
+      .then((response) => {
+        setUsers((prevUser) => prevUser.filter((user) => user._id !== userId));
       })
       .catch((err) => {
         console.log(err);
@@ -69,9 +68,6 @@ function User() {
                   <td className="p-4 flex items-center justify-center">
                     <Link
                       to={`update/${user._id}`}
-                      onClick={() => {
-                        setShowModal(true), setUpdateId(user._id);
-                      }}
                       className="bg-stone-900 px-2 p-1 mr-1 rounded shadow text-white"
                     >
                       <i className="fa-solid fa-pen-to-square"></i>
@@ -89,15 +85,6 @@ function User() {
           </tbody>
         </table>
       </div>
-      {updateId && (
-        <UpdateUser
-          updateId={updateId}
-          isVisible={showModal}
-          closeModal={() => {
-            setShowModal(false);
-          }}
-        />
-      )}
     </>
   );
 }

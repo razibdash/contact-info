@@ -1,9 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-function UpdateUser(props) {
-  // eslint-disable-next-line react/prop-types
-  const { isVisible, closeModal, updateId } = props;
+import { useNavigate, useParams } from "react-router-dom";
+function UpdateUser() {
   const userData = {
     name: "",
     img: "",
@@ -12,44 +10,43 @@ function UpdateUser(props) {
   };
   const [user, setUser] = useState(userData);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/user/${updateId}`
+          `http://localhost:3000/api/user/${id}`
         );
         setUser(response.data);
-        navigate("/");
+        console.log(user);
       } catch (error) {
         console.log("Error while fetching data", error.message);
       }
     };
     fetchData();
-  }, [updateId]);
+  }, [id]);
 
   const inputHanlder = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
   const inputFile = (e) => {
-    setUser({ ...user, myFile: e.target.files[0] });
-    console.log(e.target.files[0]);
+    setUser({ ...user, img: e.target.files[0] });
   };
 
   //   this is from submit funciton
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
-    formData.append("myFile", user.img, user.img.name);
 
+    formData.append("myFile", user.img);
     formData.append("email", user.email);
     formData.append("phone", user.phone);
     formData.append("name", user.name);
 
     await axios
-      .put(`http://localhost:3000/update/user/${updateId}`, formData)
+      .put(`http://localhost:3000/api/update/user/${id}`, formData)
       .then(() => {
         console.log("User update Succesfully");
         navigate("/");
@@ -57,9 +54,12 @@ function UpdateUser(props) {
       .catch((err) => {
         console.log("error hoice " + err.message);
       });
+    console.log(formData);
   };
 
-  if (!isVisible) return null;
+  const hanldeChangePath = () => {
+    navigate("/");
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
       <div className=" bg-stone-100 p-2 rounded-lg shadow-lg w-[500px] ">
@@ -69,7 +69,7 @@ function UpdateUser(props) {
           </h1>
           <button
             className="border rounded px-1  text-stone-500 "
-            onClick={() => closeModal()}
+            onClick={hanldeChangePath}
           >
             <i className="fa-solid fa-xmark"></i>
           </button>
@@ -78,7 +78,7 @@ function UpdateUser(props) {
         <form
           onSubmit={handleSubmit}
           encType="multipart/form-data"
-          method="post"
+          method="put"
         >
           <div className="flex flex-col p-2">
             <label className="text-stone-400" htmlFor="name">
