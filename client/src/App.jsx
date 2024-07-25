@@ -11,6 +11,10 @@ function App() {
       path: "/add",
       element: <AddUsersModal />,
     },
+    {
+      path: "/update/:id",
+      element: <User />,
+    },
   ]);
 
   return (

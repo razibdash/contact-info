@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "./Header";
+import UpdateUser from "./UpdateUser";
+import { Link, useNavigate } from "react-router-dom";
+
 function User() {
   const [users, setUsers] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
+  const [updateId, setUpdateId] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -19,14 +24,12 @@ function User() {
   const handleDeleteUser = async (userId) => {
     await axios
       .delete(`http://localhost:3000/api/delete/user/${userId}`)
+      .then(() => {
+        navigate("/");
+      })
       .catch((err) => {
         console.log(err);
       });
-    function refreshPage() {
-      window.location.reload(true);
-    }
-
-    refreshPage();
   };
 
   return (
@@ -48,8 +51,11 @@ function User() {
             {users.map((user, index) => {
               const imgUrl = "http://localhost:3000/uploads/";
               return (
-                <tr className="border-b-2  hover:bg-stone-100" key={index}>
-                  <td className="p-4">{index + 1}</td>
+                <tr
+                  className="border-b-2 text-stone-500  hover:bg-stone-100"
+                  key={index}
+                >
+                  <td className="p-4 ">{index + 1}</td>
                   <td className="p-4 ">
                     <img
                       className="w-10 h-10 m-auto border rounded-full"
@@ -61,9 +67,15 @@ function User() {
                   <td className="p-4">{user.phone}</td>
                   <td className="p-4">{user.email}</td>
                   <td className="p-4 flex items-center justify-center">
-                    <button className="bg-stone-900 px-2 p-1 mr-1 rounded shadow text-white">
+                    <Link
+                      to={`update/${user._id}`}
+                      onClick={() => {
+                        setShowModal(true), setUpdateId(user._id);
+                      }}
+                      className="bg-stone-900 px-2 p-1 mr-1 rounded shadow text-white"
+                    >
                       <i className="fa-solid fa-pen-to-square"></i>
-                    </button>
+                    </Link>
                     <button
                       onClick={() => handleDeleteUser(user._id)}
                       className="bg-red-700 px-2 p-1 rounded shadow text-white"
@@ -77,6 +89,15 @@ function User() {
           </tbody>
         </table>
       </div>
+      {updateId && (
+        <UpdateUser
+          updateId={updateId}
+          isVisible={showModal}
+          closeModal={() => {
+            setShowModal(false);
+          }}
+        />
+      )}
     </>
   );
 }

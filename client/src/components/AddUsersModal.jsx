@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { redirect } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 function AddUsersModal() {
   const userData = {
     name: "",
@@ -10,7 +9,7 @@ function AddUsersModal() {
     email: "",
   };
   const [user, setUser] = useState(userData);
-  let isRedirec = true;
+  const navigate = useNavigate();
   const inputHanlder = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
@@ -22,6 +21,7 @@ function AddUsersModal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("myFile", user.img, user.img.name);
     formData.append("email", user.email);
@@ -32,15 +32,11 @@ function AddUsersModal() {
       .post("http://localhost:3000/api/user", formData)
       .then(() => {
         console.log("User Create Succesfully");
+        navigate("/");
       })
       .catch((err) => {
         console.log(err.message);
-        console.log("errpr talknds");
       });
-    if (isRedirec == true) {
-      console.log("redirect");
-      return redirect("http://localhost:5173/");
-    }
   };
 
   return (

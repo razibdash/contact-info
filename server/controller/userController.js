@@ -58,12 +58,14 @@ const getUserById=async(req, res)=>{
 
 const userUpdate=async(req,res)=>{
     try {
+        const img=req.file.filename;
+        const {email,phone,name}=req.body;
         const getId=req.params.id;
         const userData=await User.findById(getId);
         if(!userData){
             return res.status(404).json({message:"User Data Not Found!"});
         }
-       const updateData= await User.findByIdAndUpdate(getId,req.body,{
+       const updateData= await User.findByIdAndUpdate(getId,{email,phone,img,name},{
             new:true,
         }) 
         res.status(200).json(updateData);

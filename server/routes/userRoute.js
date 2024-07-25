@@ -8,7 +8,7 @@ const route=express.Router();
 route.post('/user',upload.single('myFile'), create);
 route.get('/users',getAllUsers);
 route.get('/user/:id',getUserById);
-route.put('/update/user/:id',userUpdate);
+route.put('/update/user/:id',upload.single('myFile'),userUpdate);
 route.delete('/delete/user/:id',deleteUser);
 
 module.exports=route;
